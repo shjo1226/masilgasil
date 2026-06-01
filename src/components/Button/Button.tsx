@@ -36,6 +36,26 @@ const ButtonType: Record<ButtonVariant, React.ComponentType<any>> = {
   disabled: Disabled,
 };
 
+const getButtonWrapper = (variant: ButtonVariant, disabled?: boolean): React.ComponentType<any> => {
+  if (disabled) {
+    return ButtonType.disabled;
+  }
+
+  switch (variant) {
+    case "neumorp":
+      return ButtonType.neumorp;
+    case "naked":
+      return ButtonType.naked;
+    case "outline":
+      return ButtonType.outline;
+    case "disabled":
+      return ButtonType.disabled;
+    case "flat":
+    default:
+      return ButtonType.flat;
+  }
+};
+
 const Button = forwardRef<HTMLButtonElement, ButtonProps>(
   (
     {
@@ -56,9 +76,7 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>(
     },
     buttonRef,
   ) => {
-    const ButtonWrapper: React.ComponentType<any> = disabled
-      ? ButtonType.disabled
-      : ButtonType[variant];
+    const ButtonWrapper = getButtonWrapper(variant, disabled);
 
     const ref = useRef<HTMLButtonElement>(null);
     const rippleRef = useRef<RippleRef>(null);
