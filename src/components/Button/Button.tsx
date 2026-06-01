@@ -9,8 +9,10 @@ import LoadingDots from "@/components/LoadingDots";
 
 import RippleEffect, { RippleRef } from "./RippleEffect/RippleEffect";
 
+type ButtonVariant = "flat" | "neumorp" | "naked" | "outline" | "disabled";
+
 interface ButtonProps {
-  variant?: "flat" | "neumorp" | "naked" | "outline" | "disabled";
+  variant?: ButtonVariant;
   buttonColor?: string;
   textColor?: string;
   type?: "submit" | "reset" | "button";
@@ -26,7 +28,7 @@ interface ButtonProps {
   [key: string]: any;
 }
 
-const ButtonType = {
+const ButtonType: Record<ButtonVariant, React.ComponentType<any>> = {
   flat: Flat,
   neumorp: Neumorp,
   naked: Naked,
@@ -34,7 +36,7 @@ const ButtonType = {
   disabled: Disabled,
 };
 
-const Button: React.FC<ButtonProps> = forwardRef(
+const Button = forwardRef<HTMLButtonElement, ButtonProps>(
   (
     {
       variant = "flat",
