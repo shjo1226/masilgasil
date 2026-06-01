@@ -10,6 +10,10 @@ import { PostListItem } from "@/types/OriginDataType/Post";
 
 import { useRouter } from "next/navigation";
 
+const VirtualizedAutoSizer = AutoSizer as unknown as React.ComponentType<any>;
+const VirtualizedInfiniteLoader = InfiniteLoader as unknown as React.ComponentType<any>;
+const VirtualizedList = VList as unknown as React.ComponentType<any>;
+
 interface MoreListViewProps {
   keyword: string;
   order: string;
@@ -88,17 +92,17 @@ const MoreListView = ({
   return (
     <div className="h-full w-full">
       {listData && listData.length > 0 && (
-        <AutoSizer>
-          {({ height, width }) => (
-            <InfiniteLoader
-              isRowLoaded={({ index }) => !!listData[index]}
+        <VirtualizedAutoSizer>
+          {({ height, width }: { height: number; width: number }) => (
+            <VirtualizedInfiniteLoader
+              isRowLoaded={({ index }: { index: number }) => !!listData[index]}
               // @ts-ignore
               loadMoreRows={loadNextPage}
               rowCount={listData ? listData.length + 1 : 0}
               threshold={1}
             >
-              {({ onRowsRendered, registerChild }) => (
-                <VList
+              {({ onRowsRendered, registerChild }: any) => (
+                <VirtualizedList
                   ref={registerChild}
                   onRowsRendered={onRowsRendered}
                   width={width}
@@ -110,9 +114,9 @@ const MoreListView = ({
                   style={{ paddingBottom: "2rem" }}
                 />
               )}
-            </InfiniteLoader>
+            </VirtualizedInfiniteLoader>
           )}
-        </AutoSizer>
+        </VirtualizedAutoSizer>
       )}
 
       {listData.length <= 0 && (

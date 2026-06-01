@@ -10,6 +10,10 @@ import { PostListItem } from "@/types/OriginDataType/Post";
 
 import { useRouter } from "next/navigation";
 
+const VirtualizedAutoSizer = AutoSizer as unknown as React.ComponentType<any>;
+const VirtualizedInfiniteLoader = InfiniteLoader as unknown as React.ComponentType<any>;
+const VirtualizedList = VList as unknown as React.ComponentType<any>;
+
 interface ListSectionProps {
   id: "post" | "mate";
   data?: PostListItem[];
@@ -109,17 +113,17 @@ const ListSection = memo(function List({
       >
         {data && data.length > 0 && (
           <>
-            <AutoSizer>
-              {({ height, width }) => (
-                <InfiniteLoader
-                  isRowLoaded={({ index }) => !!data[index]}
+            <VirtualizedAutoSizer>
+              {({ height, width }: { height: number; width: number }) => (
+                <VirtualizedInfiniteLoader
+                  isRowLoaded={({ index }: { index: number }) => !!data[index]}
                   // @ts-ignore
                   loadMoreRows={loadNextPage}
                   rowCount={data ? data.length + 1 : 0}
                   threshold={1}
                 >
-                  {({ onRowsRendered, registerChild }) => (
-                    <VList
+                  {({ onRowsRendered, registerChild }: any) => (
+                    <VirtualizedList
                       ref={registerChild}
                       onRowsRendered={onRowsRendered}
                       width={width}
@@ -131,9 +135,9 @@ const ListSection = memo(function List({
                       style={{ paddingBottom: "2rem" }}
                     />
                   )}
-                </InfiniteLoader>
+                </VirtualizedInfiniteLoader>
               )}
-            </AutoSizer>
+            </VirtualizedAutoSizer>
           </>
         )}
 
