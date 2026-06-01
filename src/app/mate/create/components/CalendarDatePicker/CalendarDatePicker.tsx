@@ -7,6 +7,8 @@ import DatePicker from "react-datepicker";
 
 import { ko } from "date-fns/locale";
 
+const ReactDatePicker = DatePicker as unknown as React.ComponentType<any>;
+
 interface CalendarDatePickerProps {
   startDate: Date | null;
   setStartDate: (date: Date | null) => void;
@@ -31,7 +33,7 @@ const CalendarDatePicker = ({ startDate, setStartDate }: CalendarDatePickerProps
   );
 
   return (
-    <DatePicker
+    <ReactDatePicker
       locale={ko}
       dateFormat="yyyy년 MM월 dd일"
       selected={startDate}

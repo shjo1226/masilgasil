@@ -5,6 +5,8 @@ import * as S from "./OptionTimePicker.styles";
 import React, { useState } from "react";
 import DatePicker from "react-datepicker";
 
+const ReactDatePicker = DatePicker as unknown as React.ComponentType<any>;
+
 interface OptionTimePickerProps {
   startTime: Date | null;
   setStartTime: (time: Date | null) => void;
@@ -29,9 +31,9 @@ const OptionTimePicker = ({ startTime, setStartTime }: OptionTimePickerProps) =>
   );
 
   return (
-    <DatePicker
+    <ReactDatePicker
       selected={startTime}
-      onChange={(time) => setStartTime(time)}
+      onChange={(time: Date | null) => setStartTime(time)}
       showTimeSelect
       showTimeSelectOnly
       timeIntervals={5}
