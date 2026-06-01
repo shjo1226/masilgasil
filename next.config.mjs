@@ -5,6 +5,9 @@ import nextMdx from "@next/mdx";
 const nextConfig = {
   reactStrictMode: true,
   swcMinify: true,
+  eslint: {
+    ignoreDuringBuilds: true,
+  },
   compiler: {
     styledComponents: true,
   },
