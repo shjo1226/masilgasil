@@ -18,13 +18,17 @@ const Home = async () => {
   let popularWalkingTrails = await getPopularWalkingTrails();
 
   if (session) {
-    userInfo = await getMe().then((user) => {
-      if (!user) {
-        return;
-      }
+    try {
+      userInfo = await getMe().then((user) => {
+        if (!user) {
+          return;
+        }
 
-      return getUserProfile(user.userId);
-    });
+        return getUserProfile(user.userId);
+      });
+    } catch (error) {
+      console.error("Failed to load home user profile.", error);
+    }
   }
 
   return (
