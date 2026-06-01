@@ -1,6 +1,5 @@
 "use client";
 
-import tailwindConfig from "@/../tailwind.config";
 import { Button } from "@/components";
 import { useUI } from "@/components/uiContext/UiContext";
 import useAuthStore from "@/lib/stores/useAuthStore";
@@ -9,7 +8,6 @@ import { PostTabType } from "../../Post.types";
 
 import { MouseEvent } from "react";
 import Link from "next/link";
-import resolveConfig from "tailwindcss/resolveConfig";
 
 interface PostLinkButtonProps {
   tabIndex: PostTabType;
@@ -19,7 +17,6 @@ interface PostLinkButtonProps {
 }
 
 const PostLinkButton = ({ tabIndex, postId, firstLat, firstLng }: PostLinkButtonProps) => {
-  const { theme } = resolveConfig(tailwindConfig);
   const { isLogIn } = useAuthStore();
 
   const { openModal, setModalView } = useUI();
@@ -46,15 +43,15 @@ const PostLinkButton = ({ tabIndex, postId, firstLat, firstLng }: PostLinkButton
     >
       <Button
         width="calc(100% - 4rem)"
-        textColor={theme.colors.white}
-        buttonColor={theme.colors.green_500}
+        textColor="#FFFFFF"
+        buttonColor="#81BB26"
         style={{
           position: "absolute",
           left: "50%",
           bottom: "9rem",
           transform: "translateX(-50%)",
-          fontSize: `${theme.fontSize.large}`,
-          fontWeight: `${theme.fontWeight.bold}`,
+          fontSize: "1.6rem",
+          fontWeight: "700",
         }}
       >
         {tabIndex === PostTabType.Mate ? "메이트 모집하기" : "현재 경로로 산책하기"}

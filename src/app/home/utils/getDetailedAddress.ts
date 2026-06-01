@@ -1,13 +1,6 @@
 import { GeoPosition } from "@/types/OriginDataType";
 import { UserAddressType } from "@/types/OriginDataType/Location";
 
-const DEFAULT_ADDRESS: UserAddressType = {
-  depth1: "서울특별시",
-  depth2: "중구",
-  depth3: "명동",
-  depth4: "",
-};
-
 interface KakaoRegionResult {
   region_1depth_name: string;
   region_2depth_name: string;
@@ -15,34 +8,59 @@ interface KakaoRegionResult {
   region_4depth_name: string;
 }
 
-const getDetailedAddress = ({ lat, lng }: GeoPosition): Promise<UserAddressType | void> => {
+interface KakaoMapApi {
+  maps?: {
+    load?: (callback: () => void) => void;
+    services?: any;
+  };
+}
+
+const waitForKakaoMapsLoader = async () => {
+  const maxRetryCount = 20;
+
+  for (let retryCount = 0; retryCount < maxRetryCount; retryCount += 1) {
+    const kakaoMap = (globalThis as typeof globalThis & { kakao?: KakaoMapApi }).kakao;
+
+    if (typeof kakaoMap?.maps?.load === "function") {
+      return kakaoMap;
+    }
+
+    await new Promise((resolve) => {
+      window.setTimeout(resolve, 250);
+    });
+  }
+
+  return undefined;
+};
+
+const getDetailedAddress = async ({ lat, lng }: GeoPosition): Promise<UserAddressType | void> => {
+  if (!lat || !lng) {
+    return undefined;
+  }
+
+  const kakaoMap = await waitForKakaoMapsLoader();
+
+  if (!kakaoMap?.maps?.load) {
+    console.warn("[home/geolocation] Kakao map loader is not available.");
+    return undefined;
+  }
+
   return new Promise((resolve) => {
-    if (!lat || !lng) {
-      resolve(DEFAULT_ADDRESS);
-      return;
-    }
-
-    const kakaoMap = (globalThis as typeof globalThis & {
-      kakao?: {
-        maps?: {
-          load?: (callback: () => void) => void;
-          services?: any;
-        };
-      };
-    }).kakao;
-
-    if (!kakaoMap?.maps?.load || !kakaoMap.maps.services) {
-      resolve(DEFAULT_ADDRESS);
-      return;
-    }
-
     return kakaoMap.maps.load(() => {
       const kakao = kakaoMap;
+
+      if (!kakao.maps?.services) {
+        console.warn("[home/geolocation] Kakao map services are not available after load.");
+        resolve();
+        return;
+      }
+
       const geocoder = new kakao.maps.services.Geocoder();
 
       geocoder.coord2RegionCode(lng, lat, (result: KakaoRegionResult[], status: string) => {
         if (status !== kakao.maps.services.Status.OK) {
-          resolve(DEFAULT_ADDRESS);
+          console.warn("[home/geolocation] Kakao reverse geocoding failed.", { status });
+          resolve();
           return;
         }
 

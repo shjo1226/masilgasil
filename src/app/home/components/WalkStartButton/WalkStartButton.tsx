@@ -3,20 +3,15 @@
 // TODO - 추후 모든 Tailwind 마이그레이션 작업후 use client 제거
 import { Button } from "@/components";
 
-import tailwindConfig from "../../../../../tailwind.config";
-
 import Link from "next/link";
-import resolveConfig from "tailwindcss/resolveConfig";
 
 const WalkStartButton = () => {
-  const { theme } = resolveConfig(tailwindConfig);
-
   return (
     <Link href="/log/record">
       <Button
         variant="neumorp"
-        buttonColor={theme.colors["green_500"]}
-        textColor={theme.colors["white"]}
+        buttonColor="#81BB26"
+        textColor="#FFFFFF"
         width="calc(100% - 3rem)"
         style={{
           position: "fixed",
@@ -25,9 +20,9 @@ const WalkStartButton = () => {
           transform: "translateX(-50%)",
           maxWidth: `57rem`,
           height: "6rem",
-          fontSize: `${theme.fontSize["h6"]}`,
-          fontWeight: `${theme.fontWeight["bold"]}`,
-          zIndex: `${theme.zIndex["search_bar"]}`,
+          fontSize: "1.8rem",
+          fontWeight: "700",
+          zIndex: "30",
         }}
       >
         산책하기

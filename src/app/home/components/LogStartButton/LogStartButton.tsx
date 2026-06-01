@@ -2,17 +2,13 @@
 
 import { MouseEvent, useCallback } from "react";
 
-import tailwindConfig from "@/../tailwind.config";
 import { Button } from "@/components";
 import { useUI } from "@/components/uiContext/UiContext";
 import useAuthStore from "@/lib/stores/useAuthStore";
 
 import { useRouter } from "next/navigation";
-import resolveConfig from "tailwindcss/resolveConfig";
 
 const LogStartButton = () => {
-  const { theme } = resolveConfig(tailwindConfig);
-
   const { isLogIn } = useAuthStore();
   const navigate = useRouter();
 
@@ -36,16 +32,16 @@ const LogStartButton = () => {
     <>
       <Button
         width="100%"
-        textColor={theme.colors.white}
-        buttonColor={theme.colors.green_400}
+        textColor="#FFFFFF"
+        buttonColor="#A4D24D"
         style={{
           position: "fixed",
           left: "50%",
           bottom: "9rem",
           maxWidth: "56rem",
           transform: "translateX(-50%)",
-          fontSize: `${theme.fontSize.large}`,
-          fontWeight: `${theme.fontWeight.bold}`,
+          fontSize: "1.6rem",
+          fontWeight: "700",
         }}
         onClickHandler={handleClick}
       >

@@ -3,9 +3,16 @@ import { UserAddressType } from "@/types/OriginDataType/Location";
 
 import { create } from "zustand";
 
-const DEFAULT_USER_LOCATION: GeoPosition = {
+export const DEFAULT_USER_LOCATION: GeoPosition = {
   lat: 0,
   lng: 0,
+};
+
+export const DEFAULT_USER_ADDRESS: UserAddressType = {
+  depth1: "",
+  depth2: "",
+  depth3: "",
+  depth4: "",
 };
 
 interface UseUserLocationStore {
@@ -17,12 +24,7 @@ interface UseUserLocationStore {
 
 const useUserLocationStore = create<UseUserLocationStore>((set) => ({
   userLocation: DEFAULT_USER_LOCATION,
-  userAddress: {
-    depth1: "",
-    depth2: "",
-    depth3: "",
-    depth4: "",
-  },
+  userAddress: DEFAULT_USER_ADDRESS,
   setUserLocation: ({ lat, lng }) => set(() => ({ userLocation: { lat, lng } })),
   setUserAddress: (location) => set(() => ({ userAddress: location })),
 }));

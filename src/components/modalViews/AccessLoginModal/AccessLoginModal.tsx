@@ -1,18 +1,14 @@
 "use client";
 
-import tailwindConfig from "@/../tailwind.config";
 import Button from "@/components/Button";
 import ModalLayout from "@/components/Modal/ModalLayout";
 import { Message } from "@/components/icons";
 import { useUI } from "@/components/uiContext/UiContext";
 
 import { signIn } from "next-auth/react";
-import resolveConfig from "tailwindcss/resolveConfig";
 
 const AccessLoginModal = () => {
   const { closeModal, showLoadingSpinner } = useUI();
-
-  const { theme } = resolveConfig(tailwindConfig);
 
   return (
     <ModalLayout>

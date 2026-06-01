@@ -80,6 +80,87 @@ export interface StoredMate {
   participants: StoredParticipant[];
 }
 
+type SupabaseUser = {
+  id: number;
+  nickname: string;
+  sex?: "MALE" | "FEMALE";
+  birth_date?: string;
+  height?: number;
+  weight?: number;
+  exercise_intensity?: string;
+  profile_img?: string | null;
+  total_distance?: number;
+  total_count?: number;
+  total_calories?: number;
+  is_public?: boolean;
+  provider?: string;
+  social_id?: string;
+};
+
+type SupabasePost = {
+  id: number;
+  user_id: number;
+  depth1: string;
+  depth2?: string;
+  depth3: string;
+  depth4?: string;
+  path: StoredPost["path"];
+  title: string;
+  content: string;
+  distance: number;
+  total_time: number;
+  is_public?: boolean;
+  view_count?: number;
+  like_count?: number;
+  thumbnail_url?: string | null;
+  pins?: StoredPost["pins"];
+  created_at?: string;
+};
+
+type SupabaseMasil = {
+  id: number;
+  user_id: number;
+  post_id?: number | null;
+  depth1: string;
+  depth2?: string;
+  depth3: string;
+  depth4?: string;
+  path: StoredMasil["path"];
+  content: string;
+  thumbnail_url?: string | null;
+  distance: number;
+  total_time: number;
+  calories: number;
+  started_at: string;
+  pins?: StoredMasil["pins"];
+};
+
+type SupabaseMate = {
+  id: number;
+  author_id: number;
+  post_id: number;
+  depth1: string;
+  depth2: string;
+  depth3: string;
+  depth4: string;
+  title: string;
+  content: string;
+  gathering_place_point: StoredMate["gatheringPlacePoint"];
+  gathering_place_detail: string;
+  gathering_at: string;
+  capacity: number;
+  status: "OPEN" | "CLOSED";
+};
+
+type SupabaseParticipant = {
+  id: number;
+  user_id: number;
+  mate_id: number;
+  message?: string;
+  status: "REQUESTED" | "ACCEPTED";
+  users?: Pick<SupabaseUser, "nickname" | "profile_img">;
+};
+
 interface MockDatabaseState {
   users: StoredUser[];
   posts: StoredPost[];
@@ -95,6 +176,156 @@ interface MockDatabaseState {
 }
 
 const nowIso = () => new Date().toISOString();
+
+const toSupabaseUser = (user: Partial<StoredUser>) => ({
+  id: user.id,
+  nickname: user.nickname,
+  sex: user.sex,
+  birth_date: user.birthDate,
+  height: user.height,
+  weight: user.weight,
+  exercise_intensity: user.exerciseIntensity,
+  profile_img: user.profileImg,
+  total_distance: user.totalDistance,
+  total_count: user.totalCount,
+  total_calories: user.totalCalories,
+  is_public: user.isPublic,
+  provider: user.provider,
+  social_id: user.socialId,
+});
+
+const toSupabasePost = (post: Partial<StoredPost>) => ({
+  user_id: post.userId,
+  depth1: post.depth1,
+  depth2: post.depth2,
+  depth3: post.depth3,
+  depth4: post.depth4,
+  path: post.path,
+  title: post.title,
+  content: post.content,
+  thumbnail_url: post.thumbnailUrl,
+  distance: post.distance,
+  total_time: post.totalTime,
+  is_public: post.isPublic,
+  view_count: post.viewCount,
+  like_count: post.likeCount,
+  pins: post.pins,
+});
+
+const toSupabaseMasil = (masil: Partial<StoredMasil>) => ({
+  user_id: masil.userId,
+  post_id: masil.postId,
+  depth1: masil.depth1,
+  depth2: masil.depth2,
+  depth3: masil.depth3,
+  depth4: masil.depth4,
+  path: masil.path,
+  content: masil.content,
+  thumbnail_url: masil.thumbnailUrl,
+  distance: masil.distance,
+  total_time: masil.totalTime,
+  calories: masil.calories,
+  started_at: masil.startedAt,
+  pins: masil.pins,
+});
+
+const toSupabaseMate = (mate: Partial<StoredMate>) => ({
+  author_id: mate.authorId,
+  post_id: mate.postId,
+  depth1: mate.depth1,
+  depth2: mate.depth2,
+  depth3: mate.depth3,
+  depth4: mate.depth4,
+  title: mate.title,
+  content: mate.content,
+  gathering_place_point: mate.gatheringPlacePoint,
+  gathering_place_detail: mate.gatheringPlaceDetail,
+  gathering_at: mate.gatheringAt,
+  capacity: mate.capacity,
+  status: mate.status,
+});
+
+const mapUser = (user: SupabaseUser): StoredUser => ({
+  id: user.id,
+  nickname: user.nickname,
+  sex: user.sex,
+  birthDate: user.birth_date,
+  height: user.height,
+  weight: user.weight,
+  exerciseIntensity: user.exercise_intensity,
+  profileImg: user.profile_img,
+  totalDistance: user.total_distance ?? 0,
+  totalCount: user.total_count ?? 0,
+  totalCalories: user.total_calories ?? 0,
+  isPublic: user.is_public ?? true,
+  provider: user.provider,
+  socialId: user.social_id,
+});
+
+const mapPost = (post: SupabasePost): StoredPost => ({
+  id: post.id,
+  userId: post.user_id,
+  depth1: post.depth1,
+  depth2: post.depth2,
+  depth3: post.depth3,
+  depth4: post.depth4,
+  path: post.path,
+  title: post.title,
+  content: post.content,
+  thumbnailUrl: post.thumbnail_url,
+  distance: post.distance,
+  totalTime: post.total_time,
+  isPublic: post.is_public ?? true,
+  viewCount: post.view_count ?? 0,
+  likeCount: post.like_count ?? 0,
+  pins: post.pins ?? [],
+  createdAt: post.created_at ?? nowIso(),
+});
+
+const mapMasil = (masil: SupabaseMasil): StoredMasil => ({
+  id: masil.id,
+  userId: masil.user_id,
+  postId: masil.post_id,
+  depth1: masil.depth1,
+  depth2: masil.depth2,
+  depth3: masil.depth3,
+  depth4: masil.depth4,
+  path: masil.path,
+  content: masil.content,
+  thumbnailUrl: masil.thumbnail_url,
+  distance: masil.distance,
+  totalTime: masil.total_time,
+  calories: masil.calories,
+  startedAt: masil.started_at,
+  pins: masil.pins ?? [],
+});
+
+const mapParticipant = (participant: SupabaseParticipant): StoredParticipant => ({
+  id: participant.id,
+  userId: participant.user_id,
+  nickname: participant.users?.nickname ?? "게스트",
+  profileUrl: participant.users?.profile_img ?? null,
+  status: participant.status,
+  message: participant.message ?? "",
+});
+
+const mapMate = (mate: SupabaseMate, participants: SupabaseParticipant[] = []): StoredMate => ({
+  id: mate.id,
+  authorId: mate.author_id,
+  postId: mate.post_id,
+  depth1: mate.depth1,
+  depth2: mate.depth2,
+  depth3: mate.depth3,
+  depth4: mate.depth4,
+  title: mate.title,
+  content: mate.content,
+  gatheringPlacePoint: mate.gathering_place_point,
+  gatheringPlaceDetail: mate.gathering_place_detail,
+  gatheringAt: mate.gathering_at,
+  capacity: mate.capacity,
+  status: mate.status,
+  participants: participants.map(mapParticipant),
+});
 
 const seedState: MockDatabaseState = {
   users: [
@@ -273,8 +504,8 @@ const supabaseRequest = async <T>(path: string, init?: RequestInit): Promise<T> 
 export const storage = {
   getUserById: async (id: number) => {
     if (isSupabaseConfigured()) {
-      const users = await supabaseRequest<StoredUser[]>(`/users?id=eq.${id}&limit=1`);
-      return users[0];
+      const users = await supabaseRequest<SupabaseUser[]>(`/users?id=eq.${id}&limit=1`);
+      return users[0] ? mapUser(users[0]) : undefined;
     }
 
     return getMockState().users.find((user) => user.id === id);
@@ -282,8 +513,8 @@ export const storage = {
 
   getUserBySocialId: async (socialId: string) => {
     if (isSupabaseConfigured()) {
-      const users = await supabaseRequest<StoredUser[]>(`/users?social_id=eq.${encodeURIComponent(socialId)}&limit=1`);
-      return users[0];
+      const users = await supabaseRequest<SupabaseUser[]>(`/users?social_id=eq.${encodeURIComponent(socialId)}&limit=1`);
+      return users[0] ? mapUser(users[0]) : undefined;
     }
 
     return getMockState().users.find((user) => user.socialId === socialId);
@@ -291,7 +522,7 @@ export const storage = {
 
   listUsers: async () => {
     if (isSupabaseConfigured()) {
-      return supabaseRequest<StoredUser[]>(`/users?id=gte.0`);
+      return supabaseRequest<SupabaseUser[]>(`/users?id=gte.0`).then((users) => users.map(mapUser));
     }
 
     return getMockState().users;
@@ -299,15 +530,15 @@ export const storage = {
 
   upsertUser: async (user: Partial<StoredUser> & { socialId: string; nickname: string }) => {
     if (isSupabaseConfigured()) {
-      const [savedUser] = await supabaseRequest<StoredUser[]>(`/users?on_conflict=social_id`, {
+      const [savedUser] = await supabaseRequest<SupabaseUser[]>(`/users?on_conflict=social_id`, {
         method: "POST",
         headers: {
           Prefer: "resolution=merge-duplicates,return=representation",
         },
-        body: JSON.stringify(user),
+        body: JSON.stringify(toSupabaseUser(user)),
       });
 
-      return savedUser;
+      return mapUser(savedUser);
     }
 
     const state = getMockState();
@@ -341,11 +572,11 @@ export const storage = {
 
   updateUserById: async (id: number, patch: Partial<StoredUser>) => {
     if (isSupabaseConfigured()) {
-      const [savedUser] = await supabaseRequest<StoredUser[]>(`/users?id=eq.${id}`, {
+      const [savedUser] = await supabaseRequest<SupabaseUser[]>(`/users?id=eq.${id}`, {
         method: "PATCH",
-        body: JSON.stringify(patch),
+        body: JSON.stringify(toSupabaseUser(patch)),
       });
-      return savedUser;
+      return savedUser ? mapUser(savedUser) : undefined;
     }
 
     const user = getMockState().users.find((item) => item.id === id);
@@ -362,7 +593,7 @@ export const storage = {
 
   listPosts: async () => {
     if (isSupabaseConfigured()) {
-      return supabaseRequest<StoredPost[]>(`/posts?order=id.desc`);
+      return supabaseRequest<SupabasePost[]>(`/posts?order=id.desc`).then((posts) => posts.map(mapPost));
     }
 
     return getMockState().posts;
@@ -370,8 +601,8 @@ export const storage = {
 
   getPostById: async (id: number) => {
     if (isSupabaseConfigured()) {
-      const posts = await supabaseRequest<StoredPost[]>(`/posts?id=eq.${id}&limit=1`);
-      return posts[0];
+      const posts = await supabaseRequest<SupabasePost[]>(`/posts?id=eq.${id}&limit=1`);
+      return posts[0] ? mapPost(posts[0]) : undefined;
     }
 
     return getMockState().posts.find((post) => post.id === id);
@@ -379,11 +610,11 @@ export const storage = {
 
   savePost: async (post: Omit<StoredPost, "id" | "createdAt" | "viewCount" | "likeCount">) => {
     if (isSupabaseConfigured()) {
-      const [savedPost] = await supabaseRequest<StoredPost[]>(`/posts`, {
+      const [savedPost] = await supabaseRequest<SupabasePost[]>(`/posts`, {
         method: "POST",
-        body: JSON.stringify(post),
+        body: JSON.stringify(toSupabasePost(post)),
       });
-      return savedPost;
+      return mapPost(savedPost);
     }
 
     const state = getMockState();
@@ -401,11 +632,11 @@ export const storage = {
 
   updatePostLikeCount: async (id: number, nextLikeCount: number) => {
     if (isSupabaseConfigured()) {
-      const [savedPost] = await supabaseRequest<StoredPost[]>(`/posts?id=eq.${id}`, {
+      const [savedPost] = await supabaseRequest<SupabasePost[]>(`/posts?id=eq.${id}`, {
         method: "PATCH",
         body: JSON.stringify({ like_count: nextLikeCount }),
       });
-      return savedPost;
+      return savedPost ? mapPost(savedPost) : undefined;
     }
 
     const post = getMockState().posts.find((item) => item.id === id);
@@ -416,7 +647,9 @@ export const storage = {
 
   listMasils: async () => {
     if (isSupabaseConfigured()) {
-      return supabaseRequest<StoredMasil[]>(`/masils?order=started_at.desc`);
+      return supabaseRequest<SupabaseMasil[]>(`/masils?order=started_at.desc`).then((masils) =>
+        masils.map(mapMasil),
+      );
     }
 
     return getMockState().masils;
@@ -424,8 +657,8 @@ export const storage = {
 
   getMasilById: async (id: number) => {
     if (isSupabaseConfigured()) {
-      const masils = await supabaseRequest<StoredMasil[]>(`/masils?id=eq.${id}&limit=1`);
-      return masils[0];
+      const masils = await supabaseRequest<SupabaseMasil[]>(`/masils?id=eq.${id}&limit=1`);
+      return masils[0] ? mapMasil(masils[0]) : undefined;
     }
 
     return getMockState().masils.find((masil) => masil.id === id);
@@ -433,11 +666,11 @@ export const storage = {
 
   saveMasil: async (masil: Omit<StoredMasil, "id">) => {
     if (isSupabaseConfigured()) {
-      const [savedMasil] = await supabaseRequest<StoredMasil[]>(`/masils`, {
+      const [savedMasil] = await supabaseRequest<SupabaseMasil[]>(`/masils`, {
         method: "POST",
-        body: JSON.stringify(masil),
+        body: JSON.stringify(toSupabaseMasil(masil)),
       });
-      return savedMasil;
+      return mapMasil(savedMasil);
     }
 
     const state = getMockState();
@@ -452,7 +685,16 @@ export const storage = {
 
   listMates: async () => {
     if (isSupabaseConfigured()) {
-      return supabaseRequest<StoredMate[]>(`/mates?order=id.desc`);
+      const mates = await supabaseRequest<SupabaseMate[]>(`/mates?order=id.desc`);
+      const participants = await supabaseRequest<SupabaseParticipant[]>(
+        `/mate_participants?select=*,users(nickname,profile_img)`,
+      );
+      return mates.map((mate) =>
+        mapMate(
+          mate,
+          participants.filter((participant) => participant.mate_id === mate.id),
+        ),
+      );
     }
 
     return getMockState().mates;
@@ -460,8 +702,12 @@ export const storage = {
 
   getMateById: async (id: number) => {
     if (isSupabaseConfigured()) {
-      const mates = await supabaseRequest<StoredMate[]>(`/mates?id=eq.${id}&limit=1`);
-      return mates[0];
+      const mates = await supabaseRequest<SupabaseMate[]>(`/mates?id=eq.${id}&limit=1`);
+      if (!mates[0]) return undefined;
+      const participants = await supabaseRequest<SupabaseParticipant[]>(
+        `/mate_participants?mate_id=eq.${id}&select=*,users(nickname,profile_img)`,
+      );
+      return mapMate(mates[0], participants);
     }
 
     return getMockState().mates.find((mate) => mate.id === id);
@@ -469,11 +715,11 @@ export const storage = {
 
   saveMate: async (mate: Omit<StoredMate, "id" | "participants">) => {
     if (isSupabaseConfigured()) {
-      const [savedMate] = await supabaseRequest<StoredMate[]>(`/mates`, {
+      const [savedMate] = await supabaseRequest<SupabaseMate[]>(`/mates`, {
         method: "POST",
-        body: JSON.stringify(mate),
+        body: JSON.stringify(toSupabaseMate(mate)),
       });
-      return savedMate;
+      return mapMate(savedMate);
     }
 
     const state = getMockState();
@@ -492,14 +738,16 @@ export const storage = {
     if (!mate) return undefined;
 
     if (isSupabaseConfigured()) {
-      const [savedParticipant] = await supabaseRequest<StoredParticipant[]>(`/mate_participants`, {
+      const [savedParticipant] = await supabaseRequest<SupabaseParticipant[]>(`/mate_participants`, {
         method: "POST",
         body: JSON.stringify({
           mate_id: mateId,
-          ...participant,
+          user_id: participant.userId,
+          message: participant.message,
+          status: participant.status,
         }),
       });
-      return savedParticipant;
+      return mapParticipant(savedParticipant);
     }
 
     const state = getMockState();
@@ -516,14 +764,14 @@ export const storage = {
     if (!mate) return undefined;
 
     if (isSupabaseConfigured()) {
-      const [savedParticipant] = await supabaseRequest<StoredParticipant[]>(
+      const [savedParticipant] = await supabaseRequest<SupabaseParticipant[]>(
         `/mate_participants?id=eq.${participantId}`,
         {
           method: "PATCH",
           body: JSON.stringify({ status }),
         },
       );
-      return savedParticipant;
+      return savedParticipant ? mapParticipant(savedParticipant) : undefined;
     }
 
     const participant = mate.participants.find((item) => item.id === participantId);
