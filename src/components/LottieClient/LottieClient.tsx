@@ -1,12 +1,16 @@
 "use client";
 
-import { Component, ReactNode } from "react";
+import { Component, ComponentType, ReactNode } from "react";
 
 import dynamic from "next/dynamic";
 
-const Lottie = dynamic(() => import("react-lottie"), {
+const Lottie = dynamic(
+  () =>
+    import("react-lottie").then((module) => module.default as unknown as ComponentType<any>),
+  {
   ssr: false,
-});
+  },
+);
 
 interface LottieErrorBoundaryProps {
   children: ReactNode;

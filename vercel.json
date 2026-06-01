@@ -1,4 +1,4 @@
 {
-  "installCommand": "corepack enable && corepack prepare yarn@4.1.0 --activate && yarn --version && yarn install --immutable",
-  "buildCommand": "yarn build"
+  "installCommand": "corepack enable && corepack yarn@4.1.0 --version && corepack yarn@4.1.0 install --immutable",
+  "buildCommand": "corepack yarn@4.1.0 build"
 }
